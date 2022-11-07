@@ -1,0 +1,16 @@
+[import](common.lg)
+
+# TextInput_Prompt_GNQQTg()
+[Activity
+    Text = ${TextInput_Prompt_GNQQTg_text()}
+]
+
+# TextInput_Prompt_GNQQTg_text()
+- How can I help you?
+# SendActivity_SFtmbR()
+[Activity
+    Text = ${SendActivity_SFtmbR_text()}
+]
+
+# SendActivity_SFtmbR_text()
+- ${dialog.api_response.content.answers[0].answer}

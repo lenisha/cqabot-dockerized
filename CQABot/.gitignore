@@ -1,0 +1,4 @@
+# files generated during the lubuild process
+generated/
+bin/
+obj/

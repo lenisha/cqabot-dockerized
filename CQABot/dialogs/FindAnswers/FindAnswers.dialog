@@ -1,0 +1,90 @@
+{
+  "$kind": "Microsoft.AdaptiveDialog",
+  "$designer": {
+    "id": "3tD5hq",
+    "name": "FindAnswers",
+    "comment": ""
+  },
+  "autoEndDialog": true,
+  "defaultResultProperty": "dialog.result",
+  "triggers": [
+    {
+      "$kind": "Microsoft.OnBeginDialog",
+      "$designer": {
+        "name": "BeginDialog",
+        "description": "",
+        "id": "WAOyiO"
+      },
+      "actions": [
+        {
+          "$kind": "Microsoft.TextInput",
+          "$designer": {
+            "id": "GNQQTg"
+          },
+          "disabled": false,
+          "maxTurnCount": 3,
+          "alwaysPrompt": true,
+          "allowInterruptions": true,
+          "prompt": "${TextInput_Prompt_GNQQTg()}",
+          "unrecognizedPrompt": "",
+          "invalidPrompt": "",
+          "property": "user.question"
+        },
+        {
+          "$kind": "Microsoft.HttpRequest",
+          "$designer": {
+            "id": "QGrU3X",
+            "comment": "https://learn.microsoft.com/en-us/rest/api/cognitiveservices/questionanswering/question-answering/get-answers?tabs=HTTP"
+          },
+          "resultProperty": "dialog.api_response",
+          "method": "POST",
+          "url": "https://${settings.qna.hostname}.cognitiveservices.azure.com/language/:query-knowledgebases?projectName=${settings.qna.projectname}&api-version=2021-10-01&deploymentName=production",
+          "body": {
+            "question": "${user.question}",
+            "top": 3,
+            "confidenceScoreThreshold": 0.2
+          },
+          "headers": {
+            "Ocp-Apim-Subscription-Key": "${settings.qna.endpointKey}"
+          },
+          "contentType": "application/json",
+          "responseType": "json"
+        },
+        {
+          "$kind": "Microsoft.IfCondition",
+          "$designer": {
+            "id": "OPOYdL"
+          },
+          "condition": "dialog.api_response.statusCode==200",
+          "actions": [
+            {
+              "$kind": "Microsoft.SendActivity",
+              "$designer": {
+                "id": "SFtmbR"
+              },
+              "activity": "${SendActivity_SFtmbR()}"
+            }
+          ],
+          "elseActions": [
+            {
+              "$kind": "Microsoft.EndDialog",
+              "$designer": {
+                "id": "qTQvem"
+              }
+            }
+          ]
+        },
+        {
+          "$kind": "Microsoft.RepeatDialog",
+          "$designer": {
+            "id": "5zUFbD"
+          },
+          "activityProcessed": true
+        }
+      ]
+    }
+  ],
+  "generator": "FindAnswers.lg",
+  "recognizer": "FindAnswers.lu.qna",
+  "id": "FindAnswers"
+}
