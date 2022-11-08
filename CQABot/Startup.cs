@@ -25,6 +25,17 @@ namespace CQABot
                 options.SerializerSettings.MaxDepth = HttpHelper.BotMessageSerializerSettings.MaxDepth;
             });
             services.AddBotRuntime(Configuration);
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: "AllowedOrigins",
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader();
+                    });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,6 +65,7 @@ namespace CQABot
             {
                 endpoints.MapControllers();
             });
+            
         }
     }
 }

@@ -64,7 +64,11 @@ namespace CQABot.Controllers
 
                 // Delegate the processing of the HTTP POST to the appropriate adapter.
                 // The adapter will invoke the bot.
+                _logger.LogInformation($"-----PostAsync: PostAsync to {Request.Scheme} {Request.Host} {Request.Path} {Response.StatusCode}.");
+               
                 await adapter.ProcessAsync(Request, Response, _bot).ConfigureAwait(false);
+              
+               
             }
             else
             {

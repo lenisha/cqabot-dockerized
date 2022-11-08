@@ -22,7 +22,7 @@ spec:
         - containerPort: 3000
         env:
         - name: BOT_URL
-          value: http://cqabot-svc.bots.svc.cluster.local:8080/api/messages
+          value: http://cqabot-svc.bots.svc.cluster.local:3978/api/messages
 ---
 apiVersion: v1
 kind: Service

@@ -1,9 +1,18 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30503.244
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CQABot", "CQABot\CQABot.csproj", "{A76233AD-6C53-48D5-B8A1-09B714DDF13B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C4653F94-49C3-4F9A-A0D6-FC3D9B657BEA}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		bot-app-acr.yaml = bot-app-acr.yaml
+		directline-offline\build-offline.sh = directline-offline\build-offline.sh
+		Dockerfile = Dockerfile
+		directline-offline\Dockerfile.offline = directline-offline\Dockerfile.offline
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

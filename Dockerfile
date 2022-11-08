@@ -26,7 +26,12 @@ COPY --from=build /app ./
 #RUN apk add --no-cache icu-libs
 #ENV LC_ALL=en_US.UTF-8
 #ENV LANG=en_US.UTF-8
-ENV ASPNETCORE_URLS http://+:8080
-EXPOSE 8080
 
-ENTRYPOINT ["./CQABot"]
+EXPOSE 3978
+# configure web servers to bind to port 80 when present
+ENV ASPNETCORE_URLS=http://*:3978
+    # Enable detection of running in a container
+ENV DOTNET_RUNNING_IN_CONTAINERS=true 
+ 
+#ENTRYPOINT ["./CQABot"]
+ENTRYPOINT ["dotnet", "CQABot.dll", "--urls", "http://*:3978"]
