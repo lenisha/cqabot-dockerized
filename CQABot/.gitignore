@@ -2,3 +2,5 @@
 generated/
 bin/
 obj/
+**.Production.json
+.vs/

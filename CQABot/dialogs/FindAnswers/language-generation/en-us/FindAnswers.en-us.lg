@@ -14,3 +14,12 @@
 
 # SendActivity_SFtmbR_text()
 - ${dialog.api_response.content.answers[0].answer}
+# SendActivity_TxrjHb()
+[Activity
+    Text = ${SendActivity_TxrjHb_text()}
+]
+
+# SendActivity_TxrjHb_text()
+- ```Error calling Language service: ${dialog.api_response.statusCode} \- ${dialog.api_response.reasonPhrase} 
+
+Details: ${dialog.api_response.content.error.message} ```

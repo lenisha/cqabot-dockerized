@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cqabot-deploy
+  namespace: bots
+  labels:
+    app: cqabot-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cqabot-app
+  template:
+    metadata:
+      labels:
+        app: cqabot-app
+    spec:
+      containers:
+      - name: cqabot-app
+        image: acrforbots.azurecr.io/cqabot:latest
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cqabot-svc
+  namespace: bots
+  annotations:
+    #service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8080
+  selector:
+    app: cqabot-app

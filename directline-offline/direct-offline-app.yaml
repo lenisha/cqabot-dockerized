@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: direct-offline-deploy
+  namespace: bots
+  labels:
+    app: direct-offline-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: direct-offline-app
+  template:
+    metadata:
+      labels:
+        app: direct-offline-app
+    spec:
+      containers:
+      - name: direct-offline-app
+        image: acrforbots.azurecr.io/direct-offline:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: BOT_URL
+          value: http://cqabot-svc.bots.svc.cluster.local:8080/api/messages
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: direct-offline-svc
+  namespace: bots
+  annotations:
+    #service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 3000
+  selector:
+    app: direct-offline-app
