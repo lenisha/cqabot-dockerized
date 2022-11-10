@@ -69,7 +69,7 @@ namespace CQABot.Controllers
                 // Delegate the processing of the HTTP POST to the appropriate adapter.
                 // The adapter will invoke the bot.
                 _logger.LogInformation($"-----PostAsync: PostAsync to {Request.Scheme} {Request.Host} {Request.Path} {Response.StatusCode}. {Request.QueryString}");
-                foreach (var header in Request.Headers) 
+               /* foreach (var header in Request.Headers) 
                 { 
                    
                    _logger.LogInformation($"-----PostAsync: PostAsync to Header: {header.Key} Value {header.Value}.");
@@ -98,16 +98,12 @@ namespace CQABot.Controllers
                     leaveOpen: true))
                 {
                     var body = await reader.ReadToEndAsync();
-                    // Do some processing with body…
+                    // Do some processing with bodyï¿½
                     _logger.LogInformation($"-----PostAsync: PostAsync to Body: {body}.");
 
                     // Reset the request body stream position so the next middleware can read it
                     Request.Body.Position = 0;
-                }
-
-
-
-
+                }*/
 
                 await adapter.ProcessAsync(Request, Response, _bot).ConfigureAwait(false);
               
