@@ -1,6 +1,5 @@
-.env
 node_modules
-dist
+samples
 npm-debug.log.*
 package-lock.json
-launch.json
+tsconfig.json

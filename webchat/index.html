@@ -12,22 +12,27 @@
          src="https://cdn.botframework.com/botframework-webchat/0.13.1/botchat.js"
       ></script>
       <script>
+
+          // Connection settings
+        const botConnectionSettings = new BotChat.DirectLine({
+            secret: '1234',
+            token: '123',
+            domain: 'http://__IP__:3000/directline',
+            webSocket: false // defaults to true
+         });
+
          BotChat.App(
             {
-               directLine: { 
-                    secret: '',
-                    token: '',
-                    domain: 'http://127.0.0.1:3000/directline',
-                    webSocket: false // defaults to true
-               },
-               user: { id: 'userid' },
+               botConnection: botConnectionSettings,
+               user: { id: 'user' },
                bot: { id: 'botid' },
                resize: 'detect'
+              
             },
             document.getElementById('bot')
          );
 
-       
+         
       </script>
    </body>
 </html>

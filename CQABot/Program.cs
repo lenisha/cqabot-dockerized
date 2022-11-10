@@ -24,6 +24,8 @@ namespace CQABot
                     builder.AddBotRuntimeConfiguration(applicationRoot, settingsDirectory, environmentName);
 
                     builder.AddCommandLine(args);
+                    
+                    
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

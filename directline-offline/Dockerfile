@@ -1,6 +1,7 @@
 FROM node:16-alpine
 
-ENV BOT_URL http://127.0.0.1:3978/api/messages
+ENV BOT_URL=http://127.0.0.1:3978/api/messages
+ENV DIRECTLINE_DOMAIN=127.0.0.1
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -14,8 +15,11 @@ RUN npm install
 # If you are building your code for production
 # RUN npm ci --only=production
 
+
 # Bundle app source
 COPY . .
+
+RUN npm run build
 
 EXPOSE 3000
 CMD [ "node", "index.js" ]

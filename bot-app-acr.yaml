@@ -17,12 +17,12 @@ spec:
     spec:
       containers:
       - name: cqabot-app
-        image: acrforbots.azurecr.io/cqabot:latest
+        image: __ACR_NAME__.azurecr.io/cqabot:latest
         ports:
         - containerPort: 3978
         env:
          - name: ASPNETCORE_URLS
-           value: http://*:3978
+           value: http://0.0.0.0:3978
 ---
 apiVersion: v1
 kind: Service

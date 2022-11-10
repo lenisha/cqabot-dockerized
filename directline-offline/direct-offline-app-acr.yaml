@@ -17,23 +17,11 @@ spec:
     spec:
       containers:
       - name: direct-offline-app
-        image: acrforbots.azurecr.io/direct-offline:latest
+        image: __ACR_NAME__.azurecr.io/direct-offline:latest
         ports:
         - containerPort: 3000
         env:
         - name: BOT_URL
           value: http://cqabot-svc.bots.svc.cluster.local:3978/api/messages
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: direct-offline-svc
-  namespace: bots
-  annotations:
-    #service.beta.kubernetes.io/azure-load-balancer-internal: "true"
-spec:
-  type: LoadBalancer
-  ports:
-  - port: 3000
-  selector:
-    app: direct-offline-app
+        - name: DIRECTLINE_DOMAIN
+          value: __IP__

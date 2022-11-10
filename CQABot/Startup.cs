@@ -6,6 +6,8 @@ using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using System.Net.Http;
 
 namespace CQABot
 {
@@ -36,10 +38,22 @@ namespace CQABot
                             .AllowAnyHeader();
                     });
             });
+
+            services.AddLogging(builder => builder.SetMinimumLevel(LogLevel.Trace));
+
+            services.AddHttpClient("configured-inner-handler")
+          .ConfigurePrimaryHttpMessageHandler(() =>
+          {
+              return new HttpClientHandler()
+              {
+                  AllowAutoRedirect = false
+              };
+          });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env )
         {
             if (env.IsDevelopment())
             {
@@ -47,6 +61,7 @@ namespace CQABot
             }
 
             app.UseDefaultFiles();
+            
 
             // Set up custom content types - associating file extension to MIME type.
             var provider = new FileExtensionContentTypeProvider();

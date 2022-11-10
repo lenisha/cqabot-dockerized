@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs.Adaptive.Runtime.Settings;
@@ -44,6 +47,7 @@ namespace CQABot.Controllers
             }
         }
 
+
         [HttpPost]
         [HttpGet]
         [Route("api/{route}")]
@@ -64,8 +68,47 @@ namespace CQABot.Controllers
 
                 // Delegate the processing of the HTTP POST to the appropriate adapter.
                 // The adapter will invoke the bot.
-                _logger.LogInformation($"-----PostAsync: PostAsync to {Request.Scheme} {Request.Host} {Request.Path} {Response.StatusCode}.");
-               
+                _logger.LogInformation($"-----PostAsync: PostAsync to {Request.Scheme} {Request.Host} {Request.Path} {Response.StatusCode}. {Request.QueryString}");
+                foreach (var header in Request.Headers) 
+                { 
+                   
+                   _logger.LogInformation($"-----PostAsync: PostAsync to Header: {header.Key} Value {header.Value}.");
+
+                }
+
+                foreach (var cookie in Request.Cookies)
+                {
+
+                    _logger.LogInformation($"-----PostAsync: PostAsync to Header: {cookie.Key} Value {cookie.Value}.");
+
+                }
+
+
+                //Get request stream and reset the position of this stream
+                // Leave stream open so next middleware can read it
+
+                Request.EnableBuffering();
+
+                // Leave the body open so the next middleware can read it.
+                using (var reader = new StreamReader(
+                    Request.Body,
+                    encoding: Encoding.UTF8,
+                    detectEncodingFromByteOrderMarks: false,
+                    bufferSize: 1024*5,
+                    leaveOpen: true))
+                {
+                    var body = await reader.ReadToEndAsync();
+                    // Do some processing with body…
+                    _logger.LogInformation($"-----PostAsync: PostAsync to Body: {body}.");
+
+                    // Reset the request body stream position so the next middleware can read it
+                    Request.Body.Position = 0;
+                }
+
+
+
+
+
                 await adapter.ProcessAsync(Request, Response, _bot).ConfigureAwait(false);
               
                

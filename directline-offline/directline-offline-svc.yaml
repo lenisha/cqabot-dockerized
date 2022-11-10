@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: direct-offline-svc
+  namespace: bots
+  annotations:
+    #service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 3000
+  selector:
+    app: direct-offline-app
