@@ -1,8 +1,9 @@
 #!/bin/bash
-## USAGE  ./builddeploy.sh <ACR_NAME>
+## USAGE  ./builddeploy.sh <ACR_NAME> <Static IP for DirectLine>
 set -x #echo on
 
 ACR_NAME=$1
+STATIC_IP=$2
 
 
 echo "----- Deploy Bot"
@@ -14,7 +15,7 @@ echo "---- Deploy Directline Connector"
 pushd directline-offline
 
 kubectl apply -f directline-offline-svc.yaml
-sleep 5
+sleep 10
 
 IP=$(kubectl get service/direct-offline-svc -n bots -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 
@@ -28,7 +29,7 @@ popd
 
 echo "----- Deploy WebChat"
 pushd webchat
-sed -i "s~__IP__~${IP}~g" index.html 
+sed -i "s~__IP__~${STATIC_IP}~g" index.html 
 
 az acr login -n $ACR_NAME
 az acr build --image webchat --registry $ACR_NAME .

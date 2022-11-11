@@ -5,9 +5,10 @@ metadata:
   name: direct-offline-svc
   namespace: bots
   annotations:
-    #service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
 spec:
   type: LoadBalancer
+  loadBalancerIP: 10.240.2.255 # Static internal IP https://learn.microsoft.com/en-us/azure/aks/internal-lb
   ports:
   - port: 3000
   selector:

@@ -22,9 +22,10 @@ Prerequisites
 ```sh
 az login --tenant <TENANTID>
 ./buildall.sh <ACRNAME>
-./deployall.sh <ACRNAME>
+./deployall.sh <ACRNAME> <Directline Static IP>
 ```
 
+**Note** All AKS LoadBalancer services are using private internal IPs as per docs https://learn.microsoft.com/en-us/azure/aks/internal-lb
 
 
 # Create Custom Language answering KB 
@@ -116,18 +117,20 @@ kubectl apply -f bot-app-acr.yaml
 Check EXTERNAL-IP for the LB service in front of Bot pods
 ```
 $ kubectl get svc -A
-NAMESPACE     NAME                 TYPE           CLUSTER-IP     EXTERNAL-IP      PORT(S)          AGE
-bots          cqabot-svc           LoadBalancer   10.0.116.164   20.220.134.77   3978:32710/TCP   2d4h
-default       kubernetes           ClusterIP      10.0.0.1       <none>           443/TCP          2d20h
-kube-system   kube-dns             ClusterIP      10.0.0.10      <none>           53/UDP,53/TCP    2d20h
+NAME                 TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)          AGE
+cqabot-svc           LoadBalancer   10.0.151.170   10.240.0.4     3978:31055/TCP   16m
+direct-offline-svc   LoadBalancer   10.0.196.102   10.240.2.255   3000:31669/TCP   16m
+webchat-app-svc      LoadBalancer   10.0.249.201   10.240.0.5     8080:30912/TCP   15m
 ```
 
 # Connect Bot Emulator to Remote AKS Bot 
 
-- Make sure to install ngrok version 2 (no support for latest version 3 yet)
+- Make sure to install ngrok version 2 (no support for latest version 3 yet) https://dl.equinox.io/ngrok/ngrok/stable/archive
+
 - Install Bot Emulator
 
-- connect Emulator to Remote Bot add URL
+- connect Emulator to Remote Bot add URL (as per wiki https://github.com/microsoft/BotFramework-Emulator/wiki/Getting-Started#connecting-to-bots-hosted-remotely)
+
 ![Bot settings](docs/Bot_remoteemulator.png)
 
 # Build and Deploy Direct offline container
@@ -149,9 +152,29 @@ docker run -it --rm -p 3000:3000 --name direct_sample direct-offline
 ```
 
 
-- Deploy on AKS
+## Deploy Directline on AKS
 
-Replace in YAML for `directline-offline/direct-offline-app.yaml` IP of the directline service in environment variable `DIRECTLINE_DOMAIN`
+- Choose Static IP from the AKS Subnet range that is not used and add it in `loadBalancerIP` in `directline-offline/direct-offline-svc.yaml` (https://learn.microsoft.com/en-us/azure/aks/internal-lb)
+
+```yaml
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: direct-offline-svc
+  namespace: bots
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+spec:
+  type: LoadBalancer
+  loadBalancerIP: 10.240.2.255 # Static internal IP 
+  ports:
+  - port: 3000
+  selector:
+    app: direct-offline-app
+```
+
+- Replace in YAML for `directline-offline/direct-offline-app.yaml` IP of the directline service in environment variable `DIRECTLINE_DOMAIN`
 
 ```yaml
     spec:
@@ -164,7 +187,7 @@ Replace in YAML for `directline-offline/direct-offline-app.yaml` IP of the direc
         - name: BOT_URL
           value: http://cqabot-svc.bots.svc.cluster.local:3978/api/messages
         - name: DIRECTLINE_DOMAIN
-          value: 20.175.199.127
+          value: 10.240.2.255
 ```
 
 
@@ -172,7 +195,7 @@ Replace in YAML for `directline-offline/direct-offline-app.yaml` IP of the direc
 kubectl apply -f directline-offline/direct-offline-app.yaml
 ```
 
-TODO: REPLACE with static IP
+
 
 # Build WebChat app
 

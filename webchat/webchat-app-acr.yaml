@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: webchat-app
-        image: acrforbots.azurecr.io/webchat:latest
+        image: __ACR_NAME__.azurecr.io/webchat:latest
         ports:
         - containerPort: 8080
 
@@ -28,7 +28,7 @@ metadata:
   name: webchat-app-svc
   namespace: bots
   annotations:
-    #service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
 spec:
   type: LoadBalancer
   ports:
