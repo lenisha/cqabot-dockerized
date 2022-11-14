@@ -1,0 +1,38 @@
+<!--https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/00.migration/a.v3-to-v4-->
+
+<!DOCTYPE html>
+<html lang="en-US">
+   <head>
+      <link href="https://cdn.botframework.com/botframework-webchat/0.13.1/botchat.css" rel="stylesheet" />
+   </head>
+   <body>
+      <div id="bot"></div>
+      <script
+         crossorigin="anonymous"
+         src="https://cdn.botframework.com/botframework-webchat/0.13.1/botchat.js"
+      ></script>
+      <script>
+
+          // Connection settings
+        const botConnectionSettings = new BotChat.DirectLine({
+            secret: '1234',
+            token: '123',
+            domain: 'http://__IP__:3000/directline',
+            webSocket: false // defaults to true
+         });
+
+         BotChat.App(
+            {
+               botConnection: botConnectionSettings,
+               user: { id: 'user' },
+               bot: { id: 'botid' },
+               resize: 'detect'
+              
+            },
+            document.getElementById('bot')
+         );
+
+         
+      </script>
+   </body>
+</html>

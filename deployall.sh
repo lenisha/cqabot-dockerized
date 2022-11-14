@@ -30,6 +30,7 @@ popd
 echo "----- Deploy WebChat"
 pushd webchat
 sed -i "s~__IP__~${STATIC_IP}~g" index.html 
+sed -i "s~__IP__~${STATIC_IP}~g" index-botchat.html 
 
 az acr login -n $ACR_NAME
 az acr build --image webchat --registry $ACR_NAME .
