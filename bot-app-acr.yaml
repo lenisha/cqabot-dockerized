@@ -51,11 +51,17 @@ spec:
             memory: "512Mi"
         volumeMounts:
         - name: tmpfs
-          mountPath: /tmp 
+          mountPath: /tmp  #DONET needs it
+        - name: appsettings-volume
+          mountPath: /settings/appsettings.Production.json
+          subPath: appsettings.Production.json  
       volumes:
       - name: tmpfs
         emptyDir:
-          sizeLimit: 100Mi       
+          sizeLimit: 100Mi  
+      - name: appsettings-volume
+        configMap:
+          name: bot-appsettings       
 ---
 apiVersion: v1
 kind: Service

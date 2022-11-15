@@ -5,8 +5,11 @@ set -x #echo on
 ACR_NAME=$1
 STATIC_IP=$2
 
+kubectl create ns bots
 
 echo "----- Deploy Bot"
+kubectl apply -f bot-app-cm.yaml
+
 sed -e "s~__ACR_NAME__~${ACR_NAME}~g" bot-app-acr.yaml > bot-app-deploy.yaml 
 kubectl apply -f bot-app-deploy.yaml
 

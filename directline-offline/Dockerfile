@@ -18,12 +18,13 @@ USER node
 RUN npm install
 # If you are building your code for production
 # RUN npm ci --only=production
+# RUN npm ci --ignore-scripts && npm cache clean --force
 
 
 # Bundle app source
 COPY --chown=node:node . .
 
-RUN npm run build
+RUN npm run build && npm prune --omit=dev
 
 EXPOSE 3000
 CMD [ "node", "index.js" ]

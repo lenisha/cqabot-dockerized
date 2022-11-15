@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bot-appsettings
+  namespace: bots
+data:
+  appsettings.Production.json: |-
+   {
+    "qna": {
+         "endpointKey": "__KEY__",
+         "hostname": "botquestionsen",
+         "projectname": "CustomGuide",
+         "qnaRegion": "westus"
+    }
+   }

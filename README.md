@@ -17,7 +17,7 @@ Prerequisites
 - AZ cli and kubectl
 - create AKS and ACR
 - Create Language service and project with KB
-- Update appsettings.json and appsettings.Production.json with setting for language service
+- Update ConfigMap `bot-app-cm.yaml` with setting for language service `endpointKey`, `hostname`, `projectname`
 
 ```sh
 az login --tenant <TENANTID>
@@ -123,10 +123,12 @@ Run Non Priviledged Non root locally
 # Deploy Bot to AKS
 Create ACR and Kubernetes
 
-Replace in `bot-app-acr.yaml` ACRName to the registry name you have careted
+- Update ConfigMap `bot-app-cm.yaml` with setting for language service `endpointKey`, `hostname`, `projectname`
+- Replace in `bot-app-acr.yaml` ACRName to the registry name you have careted
 
 ```sh
 kubectl create ns bots
+kubectl apply -f bot-app-cm.yaml
 kubectl apply -f bot-app-acr.yaml
 ```
 
@@ -169,7 +171,7 @@ docker run -it --rm -p 3000:3000 --name direct_sample direct-offline
 
  Run locally unpriveledged
 ```sh
- docker run -it --rm -p 3000:30000  --name direct_sample   --user 1000:1000  --cap-drop ALL --read-only  direct-offline
+ docker run -it --rm -p 3000:3000  --name direct_sample   --user 1000:1000  --cap-drop ALL --read-only  direct-offline
 ```
 
 
