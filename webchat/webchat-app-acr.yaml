@@ -15,11 +15,43 @@ spec:
       labels:
         app: webchat-app
     spec:
+      automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 101
+        runAsGroup: 101
+        runAsNonRoot: true
+        runAsUser: 101
       containers:
       - name: webchat-app
         image: __ACR_NAME__.azurecr.io/webchat:latest
         ports:
         - containerPort: 8080
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsGroup: 3000
+          runAsNonRoot: true
+          runAsUser: 3000 
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "128Mi"
+          limits:    
+            cpu: "250m"
+            memory: "128Mi"
+        volumeMounts:
+        - name: tmpfs
+          mountPath: /tmp 
+        - name: tmpfs
+          mountPath: /var/cache/nginx
+          
+      volumes:
+      - name: tmpfs
+        emptyDir:
+          sizeLimit: 100Mi       
 
 ---
 apiVersion: v1

@@ -28,6 +28,16 @@ az login --tenant <TENANTID>
 **Note** All AKS LoadBalancer services are using private internal IPs as per docs https://learn.microsoft.com/en-us/azure/aks/internal-lb
 
 
+## Running all Containers in non priviledged mode
+
+All containers are running with non Root user context according to framework
+All Kubernetes manifests enable securityContext and read only non priviledged mode
+
+Framework specifics:
+- Nginx https://hub.docker.com/_/nginx
+- Node https://github.com/nodejs/docker-node/blob/main/16/alpine3.16/Dockerfile 
+- Dotnet https://github.com/dotnet/dotnet-docker/issues/1772 
+
 # Create Custom Language answering KB 
 
 ## Prerequisites
@@ -101,8 +111,14 @@ docker push <ACR>.azurecr.io/cqabot
 ## Test Bot Loacally
 
 ```sh
-docker run -it --rm -p 3978:3978 --name cqa_sample cqabot
+docker run -it --rm -p 3978:3978  --env ASPNETCORE_URLS=http://+:3978  --name cqa_sample cqabot
 ```
+
+Run Non Priviledged Non root locally
+
+```sh
+ docker run -it --rm -p 3978:3978  --env ASPNETCORE_URLS=http://+:3978  --name cqa_sample   --user 1000:3000  --cap-drop ALL --read-only  --mount type=tmpfs,tmpfs-size=100M,destination=/tmp   cqabot
+ ```
 
 # Deploy Bot to AKS
 Create ACR and Kubernetes
@@ -149,6 +165,11 @@ docker push <ACR>.azurecr.io/direct-offline
 - Run locally
 ```
 docker run -it --rm -p 3000:3000 --name direct_sample direct-offline
+```
+
+ Run locally unpriveledged
+```sh
+ docker run -it --rm -p 3000:30000  --name direct_sample   --user 1000:1000  --cap-drop ALL --read-only  direct-offline
 ```
 
 
@@ -218,6 +239,11 @@ docker tag cqabot <ACR>.azurecr.io/webchat
 az login --tenant <TENANTID>
 az acr login  --name acrforbots
 docker push <ACR>.azurecr.io/webchat
+```
+
+- Run locally in read unpriveledged mode
+```sh
+ docker run -it --rm -p 8080:8080  --name wch_sample   --user 101:101  --cap-drop ALL --read-only  --mount type=tmpfs,tmpfs-size=100M,destination=/tmp  -v $(pwd)/nginx-cache:/var/cache/nginx webchat
 ```
 
 - deploy in AKS

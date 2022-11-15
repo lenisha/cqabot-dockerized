@@ -1,6 +1,21 @@
 FROM nginx:1.15.8-alpine
-#configuration
-COPY ./nginx.conf /etc/nginx/nginx.conf
+
+
+## add permissions for nginx user
+#
+
+RUN mkdir -p /var/cache/nginx
+RUN chown -R nginx:nginx /var/cache/nginx
+
+RUN  touch /tmp/nginx.pid && \
+     chown -R nginx:nginx /tmp/nginx.pid
+USER nginx        
+
+
+COPY --chown=nginx:nginx ./nginx.conf /etc/nginx/nginx.conf
 #content, comment out the ones you dont need!
-COPY ./*.html /usr/share/nginx/html/
+COPY --chown=nginx:nginx ./*.html /usr/share/nginx/html/
+
+
+
 EXPOSE 8080

@@ -1,3 +1,4 @@
+# secure non root deployment https://github.com/dotnet/dotnet-docker/issues/1772
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -15,14 +16,46 @@ spec:
       labels:
         app: cqabot-app
     spec:
+      automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 3000
+        runAsGroup: 3000
+        runAsNonRoot: true
+        runAsUser: 1000
       containers:
       - name: cqabot-app
         image: __ACR_NAME__.azurecr.io/cqabot:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 3978
         env:
          - name: ASPNETCORE_URLS
            value: http://0.0.0.0:3978
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsGroup: 3000
+          runAsNonRoot: true
+          runAsUser: 3000
+          #seccompProfile:
+          #  type: RuntimeDefault
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+          limits:    
+            cpu: "500m"
+            memory: "512Mi"
+        volumeMounts:
+        - name: tmpfs
+          mountPath: /tmp 
+      volumes:
+      - name: tmpfs
+        emptyDir:
+          sizeLimit: 100Mi       
 ---
 apiVersion: v1
 kind: Service

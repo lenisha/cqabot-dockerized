@@ -1,3 +1,4 @@
+# https://github.com/nodejs/docker-node/blob/main/16/alpine3.16/Dockerfile 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -15,9 +16,16 @@ spec:
       labels:
         app: direct-offline-app
     spec:
+      automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
       containers:
       - name: direct-offline-app
         image: __ACR_NAME__.azurecr.io/direct-offline:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 3000
         env:
@@ -25,3 +33,21 @@ spec:
           value: http://cqabot-svc.bots.svc.cluster.local:3978/api/messages
         - name: DIRECTLINE_DOMAIN
           value: __IP__
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsGroup: 1000
+          runAsNonRoot: true
+          runAsUser: 1000
+          #seccompProfile:
+          #  type: RuntimeDefault
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+          limits:    
+            cpu: "500m"
+            memory: "512Mi"  
