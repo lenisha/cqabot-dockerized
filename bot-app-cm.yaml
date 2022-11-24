@@ -9,7 +9,7 @@ data:
     "qna": {
          "endpointKey": "__KEY__",
          "hostname": "botquestionsen",
-         "projectname": "CustomGuide",
-         "qnaRegion": "westus"
+         "projectname": "CustomGuide"
+         
     }
    }
