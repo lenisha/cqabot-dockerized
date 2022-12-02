@@ -3,12 +3,12 @@ kind: ConfigMap
 metadata:
   name: bot-appsettings
   namespace: bots
-data:
+data: 
   appsettings.Production.json: |-
    {
     "qna": {
          "endpointKey": "__KEY__",
-         "domain": "botquestionsen.cognitiveservices.azure.com",
+         "domain": "botquestionsen.cognitiveservices.azure.com",  
          "projectname": "CustomGuide"
     }
    }

@@ -8,7 +8,7 @@ data:
    {
     "qna": {
          "endpointKey": "__KEY__",
-         "domain": "language-svc",
+         "domain": "botquestionsen.cognitiveservices.azure.com",
          "projectname": "CustomGuide"
     }
    }
