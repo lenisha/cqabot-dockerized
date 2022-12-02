@@ -38,7 +38,8 @@ All Istio and TLS updated manifests are in [manifests/tls](manifests/tls)
 - Update Bot dotnet app settings pointing to Language service `bot-app-cm.yaml` and deploy
 - Deploy Bot Application `bot-app-acr.yaml` [Reaplace ACR name]
 
-- Update DirectlineOffline app settings pointing IP/domain of the Directline Internal Service (it will be called by Bot Pod internally) `directline-offline-app-acr.yaml` and deploy [Reaplace ACR name]
+- Update DirectlineOffline app settings `directline-offline-app-acr.yaml` and deploy [Reaplace ACR name]
+  Directline Domain env setting is name (internal  DNS) of Directline service as it is used by Bot Pod internally and could be resolved.
 
 - [Optionally] Replace in `webchat\index.html` directline DNS name to point to Ingress and rebuild Container (or pass it  later in URL  parameter `uri` without performing a change )
 - Update WebChat Sample app `webchat-app-acr.yaml` and deploy [Reaplace ACR name]

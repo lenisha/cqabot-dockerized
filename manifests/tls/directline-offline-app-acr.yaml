@@ -32,7 +32,7 @@ spec:
         - name: BOT_URL
           value: http://cqabot-svc.bots.svc.cluster.local:3978/api/messages
         - name: DIRECTLINE_DOMAIN
-          value: 10.240.2.255  ## REPLACE with IP of Directline Service
+          value: direct-offline-svc  
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
