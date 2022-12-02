@@ -38,7 +38,7 @@
           },
           "resultProperty": "dialog.api_response",
           "method": "POST",
-          "url": "https://${settings.qna.hostname}.cognitiveservices.azure.com/language/:query-knowledgebases?projectName=${settings.qna.projectname}&api-version=2021-10-01&deploymentName=production",
+          "url": "https://${settings.qna.domain}/language/:query-knowledgebases?projectName=${settings.qna.projectname}&api-version=2021-10-01&deploymentName=production",
           "body": {
             "question": "${user.question}",
             "top": 3,

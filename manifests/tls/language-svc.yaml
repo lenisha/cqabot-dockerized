@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: lang-service
+  namespace: bots
+spec:
+  type: ExternalName
+  externalName: botquestionsen.cognitiveservices.azure.com
