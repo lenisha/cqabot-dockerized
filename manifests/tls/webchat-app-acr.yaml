@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webchat-deploy
+  namespace: bots
+  labels:
+    app: webchat-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webchat-app
+  template:
+    metadata:
+      labels:
+        app: webchat-app
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 101
+        runAsGroup: 101
+        runAsNonRoot: true
+        runAsUser: 101
+      containers:
+      - name: webchat-app
+        image: acrforbots.azurecr.io/webchat:latest #REPLACE
+        ports:
+        - containerPort: 8080
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsGroup: 101
+          runAsNonRoot: true
+          runAsUser: 101 
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "128Mi"
+          limits:    
+            cpu: "250m"
+            memory: "128Mi"
+        volumeMounts:
+        - name: tmpfs
+          mountPath: /tmp 
+        - name: tmpfs
+          mountPath: /var/cache/nginx
+          
+      volumes:
+      - name: tmpfs
+        emptyDir:
+          sizeLimit: 100Mi       
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webchat-app-svc
+  namespace: bots
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8080
+  selector:
+    app: webchat-app

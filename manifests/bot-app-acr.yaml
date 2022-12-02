@@ -1,0 +1,78 @@
+# secure non root deployment https://github.com/dotnet/dotnet-docker/issues/1772
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cqabot-deploy
+  namespace: bots
+  labels:
+    app: cqabot-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cqabot-app
+  template:
+    metadata:
+      labels:
+        app: cqabot-app
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 3000
+        runAsGroup: 3000
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+      - name: cqabot-app
+        image: __ACR_NAME__.azurecr.io/cqabot:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3978
+        env:
+         - name: ASPNETCORE_URLS
+           value: http://0.0.0.0:3978
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsGroup: 3000
+          runAsNonRoot: true
+          runAsUser: 1000
+          #seccompProfile:
+          #  type: RuntimeDefault
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+          limits:    
+            cpu: "500m"
+            memory: "512Mi"
+        volumeMounts:
+        - name: tmpfs
+          mountPath: /tmp  #DONET needs it
+        - name: appsettings-volume
+          mountPath: /settings/appsettings.Production.json
+          subPath: appsettings.Production.json  
+      volumes:
+      - name: tmpfs
+        emptyDir:
+          sizeLimit: 100Mi  
+      - name: appsettings-volume
+        configMap:
+          name: bot-appsettings       
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cqabot-svc
+  namespace: bots
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 3978
+  selector:
+    app: cqabot-app

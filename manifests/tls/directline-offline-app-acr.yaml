@@ -1,0 +1,63 @@
+# https://github.com/nodejs/docker-node/blob/main/16/alpine3.16/Dockerfile 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: direct-offline-deploy
+  namespace: bots
+  labels:
+    app: direct-offline-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: direct-offline-app
+  template:
+    metadata:
+      labels:
+        app: direct-offline-app
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+      - name: direct-offline-app
+        image: acrforbots.azurecr.io/direct-offline:latest  #REPLACE
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+        env:
+        - name: BOT_URL
+          value: http://cqabot-svc.bots.svc.cluster.local:3978/api/messages
+        - name: DIRECTLINE_DOMAIN
+          value: bot.example.com   ## REPLACE
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsGroup: 1000
+          runAsNonRoot: true
+          runAsUser: 1000
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+          limits:    
+            cpu: "500m"
+            memory: "512Mi"  
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: direct-offline-svc
+  namespace: bots
+spec:
+  type: ClusterIP
+  ports:
+  - port: 3000
+  selector:
+    app: direct-offline-app

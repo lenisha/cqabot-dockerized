@@ -28,13 +28,19 @@
     <div id="webchat" role="main"></div>
     <script>
       (async function () {
+
+        var params = new window.URLSearchParams(window.location.search);
+       
+        uri_set = params.get('uri') ? params.get('uri') : 'https://bot.example.com' 
+        console.log('uri:' + uri_set);
+
         window.WebChat.renderWebChat(
           {
             directLine: window.WebChat.createDirectLine(
                 {
                     secret:"",
                     token:"", 
-                    domain: "http://__IP__:3000/directline",
+                    domain: uri_set + "/directline",
                     webSocket: false
                     })
           },

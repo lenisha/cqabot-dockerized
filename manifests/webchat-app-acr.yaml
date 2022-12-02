@@ -32,9 +32,9 @@ spec:
             drop:
             - ALL
           readOnlyRootFilesystem: true
-          runAsGroup: 3000
+          runAsGroup: 101
           runAsNonRoot: true
-          runAsUser: 3000 
+          runAsUser: 101 
         resources:
           requests:
             cpu: "250m"

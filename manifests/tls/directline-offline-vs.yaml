@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: directoffline
+  namespace: bots
+spec:
+  hosts:
+  - "bot.example.com"
+  gateways:
+  - bot-gateway
+  - mesh
+  http:
+  - match:
+    - uri:
+        prefix: /directline
+    route:
+    - destination:
+        port:
+          number: 3000
+        host: direct-offline-svc

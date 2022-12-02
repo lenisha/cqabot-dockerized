@@ -24,7 +24,7 @@ spec:
         runAsUser: 1000
       containers:
       - name: cqabot-app
-        image: __ACR_NAME__.azurecr.io/cqabot:latest
+        image: acrforbots.azurecr.io/cqabot:latest   # REPLACE
         imagePullPolicy: Always
         ports:
         - containerPort: 3978
@@ -39,9 +39,7 @@ spec:
           readOnlyRootFilesystem: true
           runAsGroup: 3000
           runAsNonRoot: true
-          runAsUser: 3000
-          #seccompProfile:
-          #  type: RuntimeDefault
+          runAsUser: 1000
         resources:
           requests:
             cpu: "500m"
@@ -68,10 +66,8 @@ kind: Service
 metadata:
   name: cqabot-svc
   namespace: bots
-  annotations:
-    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
   - port: 3978
   selector:
