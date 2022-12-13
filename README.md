@@ -87,26 +87,45 @@ REST call is sent to language `hostname` and `projectname` and use `endpointKey`
 Composer generates ASP.NET Core based code that could be run in Docker on AKS
 
 ## Set Language Service settings
-Secrets are not stored in repo to add Language service `endpointKey` add `settings/appsettings.Production.json` file with key for CQA endpoint:
+Secrets are not stored in repo to add Language service `endpointKey` add `settings/appsettings.Production.json` file with key for CQA endpoint, Domain for the service and project name:
 
 ```json
 {
   "qna": {
-    "endpointKey": "xxxxx"
+    "endpointKey": "xxxxx",
+    "domain": "botlanguage.cognitiveservices.azure.com",
+    "projectname": "CustomGuide"
   }
 }
 ```
 
-# Build Bot Container
+# Build Bot Container with Docker
+
+Build container:
 
 ```
 docker  build -t cqabot .
-docker tag cqabot <ACR>.azurecr.io/cqabot
+```
 
+Push contaniner to ACR
+```
 az login --tenant <TENANTID>
-az acr login  --name acrforbots
+az acr login  --name <ACRNAME>
+
+docker tag cqabot <ACR>.azurecr.io/cqabot
 docker push <ACR>.azurecr.io/cqabot
 ```
+
+# Build Bot Container with ACR
+
+Build and Push contaniner with ACR
+```
+az login --tenant <TENANTID>
+az acr login  --name <ACRNAME>
+
+az acr build --image cqabot --registry $ACR_NAME .
+```
+
 
 ## Test Bot Loacally
 
