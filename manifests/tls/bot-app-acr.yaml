@@ -51,7 +51,7 @@ spec:
         - name: tmpfs
           mountPath: /tmp  #DONET needs it
         - name: appsettings-volume
-          mountPath: /settings/appsettings.Production.json
+          mountPath: /app/settings/appsettings.Production.json
           subPath: appsettings.Production.json  
       volumes:
       - name: tmpfs
