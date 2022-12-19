@@ -17,9 +17,12 @@ RUN dotnet publish -c Release -o /app
 
 
 # final stage/image
-
 FROM mcr.microsoft.com/dotnet/aspnet:6.0-alpine
 WORKDIR /app
+
+# https://stackoverflow.com/questions/71045784/running-net-6-project-in-docker-throws-globalization-culturenotfoundexception
+RUN apk add --no-cache icu-libs krb5-libs libgcc libintl libssl1.1 libstdc++ zlib 
+
 COPY --from=build /app ./
 
 
@@ -28,6 +31,7 @@ EXPOSE 3978
 ENV ASPNETCORE_URLS=http://+:3978
     # Enable detection of running in a container
 ENV DOTNET_RUNNING_IN_CONTAINERS=true 
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 
 USER 1000:3000
 ENTRYPOINT ["dotnet", "CQABot.dll"] 
